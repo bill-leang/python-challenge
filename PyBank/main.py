@@ -21,8 +21,8 @@ csvpath = os.path.join("Resources", "budget_data.csv")
 # read the file
 with open(csvpath, 'r') as file:
   csvreader = csv.reader(file)
-  # discard the header
-  next(csvreader)
+  # store the header
+  header = next(csvreader)
   # read and tally the data line by line
   for row in csvreader:
     currMonth = row[0]
@@ -44,16 +44,17 @@ with open(csvpath, 'r') as file:
       decrProfit = currProfit
       decrMonth = currMonth
 
-avgChg = round(total /tmonth,2)
+avgChg = total /tmonth
 
-
+# create the result, format as currency
 output = 'Financial Analysis\n\n'
 output += '-'*30 + '\n\n'
 output += f"Total Months: {tmonth}\n\n"
-output += f"Total: ${total}\n\n"
-output += f"Average Change: ${avgChg:.2f}\n\n"
-output += f"Greatest Increase in Profits: {incrMonth} (${incrProfit})\n\n"
-output += f"Greatest Dncrease in Profits: {decrMonth} (${decrProfit})\n\n"
+output += f"Total: ${total:,}\n\n"
+# format as currency to 2 decimal places
+output += f"Average Change: ${avgChg:,.2f}\n\n"
+output += f"Greatest Increase in Profits: {incrMonth} (${incrProfit:,})\n\n"
+output += f"Greatest Dncrease in Profits: {decrMonth} (${decrProfit:,})\n"
 print(output)
 
 # write result to file
