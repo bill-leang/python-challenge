@@ -45,6 +45,7 @@ with open(csvpath, 'r') as file:
       
       # skip to next row
       continue
+    # for 2nd row on, calc change, record number of month
     else: 
     # calc the change in profit
       chgProfit = currProfit - prevProfit
