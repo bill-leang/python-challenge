@@ -10,13 +10,21 @@ import os
 import csv
 
 tmonth= 0
+# for tracking total profit
 total = 0
+# for tracking total change in profit
+totalChg = 0
 avgChg = 0
+# record biggest increase in profit and its month
 incrMonth = 0
 incrProfit = 0
+# records biggest decrease in profit and its month
 decrMonth = 0
 decrProfit = 0
-
+# change in profit
+chgProfit =0
+prevProfit = 0
+firstRow = True
 csvpath = os.path.join("Resources", "budget_data.csv")
 # read the file
 with open(csvpath, 'r') as file:
@@ -25,26 +33,35 @@ with open(csvpath, 'r') as file:
   header = next(csvreader)
   # read and tally the data line by line
   for row in csvreader:
+    # current month and profit
     currMonth = row[0]
     currProfit = int(row[1])
+    tmonth +=1
     total += currProfit
-    tmonth += 1
-    # check if this is the first row
-    if incrProfit == 0:
-      incrProfit = currProfit
-      decrProfit = currProfit
-      incrMonth = currMonth
-      decrMonth = currMonth
+    # for first row, no change is recorded, not count the month
+    if firstRow:
+      prevProfit = currProfit
+      firstRow = False
+      
+      # skip to next row
+      continue
+    else: 
+    # calc the change in profit
+      chgProfit = currProfit - prevProfit
+      prevProfit = currProfit
+      totalChg += chgProfit
+      
     # check if the current month profit is more than greatest incr Profit so far
-    elif currProfit > incrProfit:
-      incrProfit = currProfit
+    if chgProfit > incrProfit:
+      incrProfit = chgProfit
       incrMonth = currMonth
     # check if the current month profit is less than greatest decr Profit so far
-    elif currProfit < decrProfit:
-      decrProfit = currProfit
+    elif chgProfit < decrProfit:
+      decrProfit = chgProfit
       decrMonth = currMonth
 
-avgChg = total /tmonth
+# note the average change is divided by 85 months as the first month is not considered
+avgChg = totalChg /(tmonth -1)
 
 # create the result, format as currency
 output = 'Financial Analysis\n\n'
